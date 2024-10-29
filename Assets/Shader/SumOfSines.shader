@@ -21,7 +21,9 @@ Shader "Custom/SumofSines"
         Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
         ZWrite Off
         Blend SrcAlpha OneMinusSrcAlpha
+        //Don't draw the bottom of the water, effeciency.
         Cull back
+        //Level of detail.
         LOD 100
 
         Pass
@@ -33,6 +35,7 @@ Shader "Custom/SumofSines"
 
             struct appdata
             {
+                //Model data.
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
                 float2 uv : TEXCOORD0;
@@ -40,6 +43,7 @@ Shader "Custom/SumofSines"
 
             struct v2f
             {
+                //Vertex data in floats.
                 float2 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
                 float3 normal : TEXCOORD1;
@@ -56,10 +60,12 @@ Shader "Custom/SumofSines"
             v2f vert(appdata v)
             {
                 v2f o;
+                //Frequency of waves determined.
                 float frequency = (2 * 3.14) / Wavelength;
                 float timeFactor = _Time.y * (Speed * frequency);
                 float2 direction = dot(Direction, float2(v.vertex.x, v.vertex.z));
-
+                
+                //Sum of signs to be added together for the wave effect.
                 float displacement1 = Amplitude * sin(timeFactor + frequency * .3 * direction);
                 float displacement2 = Amplitude * sin(timeFactor + frequency * .5 * direction);
                 float displacement3 = Amplitude * sin(timeFactor + frequency * 1 * direction);
@@ -75,12 +81,12 @@ Shader "Custom/SumofSines"
 
             fixed4 frag(v2f i) : SV_Target
             {
-
                 float edge = smoothstep(0.0, 1.0, length(i.normal.xy));
                 edge = 1.0 - edge;
 
                 float4 tempAlpha = (1, 1, 1, WaveAlpha);
 
+                //Calculate the final color.
                 float4 finalColor = lerp(fixed4(WaveColor.rgb, WaveAlpha), tempAlpha, edge);
                 return finalColor;
             }
