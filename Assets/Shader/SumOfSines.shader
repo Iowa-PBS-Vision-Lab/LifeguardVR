@@ -66,9 +66,9 @@ Shader "Custom/SumofSines"
                 float2 direction = dot(Direction, float2(v.vertex.x, v.vertex.z));
                 
                 //Sum of signs to be added together for the wave effect.
-                float displacement1 = Amplitude * sin(timeFactor + frequency * .3 * direction);
-                float displacement2 = Amplitude * sin(timeFactor + frequency * .5 * direction);
-                float displacement3 = Amplitude * sin(timeFactor + frequency * 1 * direction);
+                float displacement1 = Amplitude * sin(timeFactor + frequency * .3 * direction * frac(sin(dot(1,float2(12.9898,78.233)))*43758.5453123));
+                float displacement2 = Amplitude * sin(timeFactor + frequency * .5 * direction * frac(sin(dot(1,float2(12.9898,78.233)))*43758.5453123));
+                float displacement3 = Amplitude * sin(timeFactor + frequency * 1 * direction * frac(sin(dot(1,float2(12.9898,78.233)))*43758.5453123));
 
                 float sumofsines = displacement1 + displacement2 + displacement3;
 

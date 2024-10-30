@@ -7,11 +7,10 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: water 1
-  m_Shader: {fileID: 4800000, guid: 59e12bafb11a8a046b6fb85921606a7c, type: 3}
+  m_Name: New Material 1
+  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
   m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _ALPHABLEND_ON
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -42,7 +41,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 3e70155fc97995a46a0ec193a2f19dac, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -59,43 +58,23 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - Amplitude: 0.126
-    - Speed: 0.64
-    - Threshold: 0
-    - WaveAlpha: 0.558
-    - Wavelength: 0.58
-    - _Amplitude: 0.58
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _DstBlend: 10
+    - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _Metallic: 0
-    - _Mode: 2
+    - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _Speed: 3.6
-    - _SrcBlend: 5
-    - _Threshold: 0.941
+    - _SrcBlend: 1
     - _UVSec: 0
-    - _Wavelength: 8.7
-    - _ZWrite: 0
-    - ouch: 10
-    - oucj: 1
+    - _ZWrite: 1
     m_Colors:
-    - Color1: {r: 0, g: 0, b: 0, a: 1}
-    - Color2: {r: 0.6886792, g: 0.6886792, b: 0.6886792, a: 1}
-    - Direction: {r: 0.15, g: 1.13, b: 0.2, a: 0}
-    - EdgeColor: {r: 0, g: 0.12333298, b: 1, a: 0.16470589}
-    - WaveColor: {r: 0, g: 0.077774025, b: 1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 0.69411767}
-    - _Color1: {r: 1, g: 1, b: 1, a: 1}
-    - _Color2: {r: 1, g: 1, b: 1, a: 0.2901961}
-    - _Direction: {r: 0.1, g: 1, b: 0.1, a: 1}
-    - _EdgeColor: {r: 0.024230003, g: 0, b: 1, a: 0.13333334}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
