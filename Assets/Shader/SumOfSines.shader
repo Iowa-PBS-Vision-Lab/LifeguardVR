@@ -84,6 +84,7 @@ Shader "Custom/SumofSines"
                 float edge = smoothstep(0.0, 1.0, length(i.normal.xy));
                 edge = 1.0 - edge;
 
+                //Create temporary alpha blend.
                 float4 tempAlpha = (1, 1, 1, WaveAlpha);
 
                 //Calculate the final color.
@@ -94,3 +95,4 @@ Shader "Custom/SumofSines"
         }
     }
 }
+ 
