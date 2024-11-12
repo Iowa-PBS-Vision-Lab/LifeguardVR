@@ -20,7 +20,7 @@ public class BobbingEffect : MonoBehaviour
     {
         // Calculate vertical bobbing offset
         float addToPos = Mathf.Sin(Time.time * bobPosSpeed) * bobPosAmount;
-        transform.position = initialPosition + Vector3.up * addToPos;
+        transform.position = initialPosition + Vector3.up * addToPos; 
 
         // Calculate rotational bobbing
         // float xRot = Mathf.Sin(Time.time * bobRotSpeed) * bobRotAmount;
