@@ -63,7 +63,7 @@ Material:
     m_Ints: []
     m_Floats:
     - Amplitude: 0.562
-    - Speed: 0.09
+    - Speed: 0.8
     - Threshold: 0
     - WaveAlpha: 0.173
     - Wavelength: 2
