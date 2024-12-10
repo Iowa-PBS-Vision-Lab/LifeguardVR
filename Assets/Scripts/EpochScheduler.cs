@@ -15,6 +15,7 @@ public class EpochScheduler : MonoBehaviour
     public int EPOCH_AMOUNT = 10;
     [SerializeField]
     public GameObject swimmer;
+    public List<GameObject> swimmerSet = new List<GameObject>();
     private float timeRemaining;
     private int epochsRemaining;
     private int epochSetIndex;
@@ -30,6 +31,7 @@ public class EpochScheduler : MonoBehaviour
             var temp_x = UnityEngine.Random.Range(31.0f, -40.0f);
             var temp = Instantiate(swimmer);
             temp.GetComponent<Transform>().position = new Vector3(temp_x,0,temp_z);
+            swimmerSet.Add(temp);
         }
     }
 
