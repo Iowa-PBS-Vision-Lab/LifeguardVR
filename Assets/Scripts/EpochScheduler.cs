@@ -13,6 +13,8 @@ public class EpochScheduler : MonoBehaviour
     public float EPOCH_TIME = 10f;
     [SerializeField]
     public int EPOCH_AMOUNT = 10;
+    [SerializeField]
+    public GameObject swimmer;
     private float timeRemaining;
     private int epochsRemaining;
     private int epochSetIndex;
@@ -21,6 +23,15 @@ public class EpochScheduler : MonoBehaviour
     [SerializeField]
     private TMP_Text outputText;
     private float fps;
+
+    public void spawnSwimmers(int count){
+        for (int i = 0; i < count; i++) {
+            var temp_z = UnityEngine.Random.Range(-40.0f, -190.0f);
+            var temp_x = UnityEngine.Random.Range(31.0f, -40.0f);
+            var temp = Instantiate(swimmer);
+            temp.GetComponent<Transform>().position = new Vector3(temp_x,0,temp_z);
+        }
+    }
 
     public void writeToDebug(){
         //Calculate fps.
@@ -46,6 +57,7 @@ public class EpochScheduler : MonoBehaviour
             //Decrement the epoch.
             timeRemaining = EPOCH_TIME;
             epochsRemaining--;
+
         }
     }
 
@@ -58,6 +70,8 @@ public class EpochScheduler : MonoBehaviour
         epochSize = EPOCH_SETS[epochSetIndex];
         timeRemaining = EPOCH_TIME;
         epochsRemaining = EPOCH_AMOUNT;
+        //Spawn in the people.
+        spawnSwimmers(EPOCH_SETS[0]);
         //Repeatedly update the debug screen.
         InvokeRepeating("writeToDebug", 1f, 0.1f);
     }
