@@ -73,3 +73,7 @@ crashlytics-build.properties
 
 # Mac file setting
 .DS_Store
+
+# VS code settings and extensions
+
+**/.vscode/
