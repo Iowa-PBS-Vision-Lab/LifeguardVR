@@ -25,17 +25,33 @@ public class EpochScheduler : MonoBehaviour
     private TMP_Text outputText;
     private float fps;
 
-    public void spawnSwimmers(int count){
+    public int calculateWave(){
+        //Simple calculation of the change in size of our swimmingpool set.
+        return epochSize - swimmerSet.Count;
+    }
+    private void spawnSwimmers(int count){
+        //Add "count" number of swimmer objects in randomized fashion.
+        //We should make better "randomization" to avoid overlapping.
         for (int i = 0; i < count; i++) {
+            //This is just an eyeballed range.
             var temp_z = UnityEngine.Random.Range(-40.0f, -190.0f);
             var temp_x = UnityEngine.Random.Range(31.0f, -40.0f);
+            //Grab prefab "swimmer" and instantiate copies.
             var temp = Instantiate(swimmer);
             temp.GetComponent<Transform>().position = new Vector3(temp_x,0,temp_z);
+            //Add swimmer to our list, this isn't for rendering or the engine, but to track who is on screen for data output as well as culling/addition.
             swimmerSet.Add(temp);
         }
     }
+    private void cullSwimmers(int count){
+        //Remove "count" number of swimmer objects.
+        for (int i = 0; i < count; i++) {
+            Destroy(swimmerSet[0]);
+            swimmerSet.Remove(swimmerSet[0]);
+        }
+    }
 
-    public void writeToDebug(){
+    private void writeToDebug(){
         //Calculate fps.
         fps = (int)(1/Time.deltaTime);
         //Set values to screen.
@@ -55,6 +71,15 @@ public class EpochScheduler : MonoBehaviour
                 epochSetIndex = EPOCH_SETS.Length - epochSetRemaining;
                 epochSize = EPOCH_SETS[epochSetIndex];
                 epochsRemaining = EPOCH_AMOUNT;
+                //Calculate if we must add or remove swimmers.
+                //*Note that this feature is purely here for testing the epoch structure, and will be changed/improved completely.
+                var temp = calculateWave();
+                if(temp > 0){
+                    spawnSwimmers(temp);
+                }
+                else if(temp < 0){
+                    cullSwimmers(temp*-1);
+                }
             }
             //Decrement the epoch.
             timeRemaining = EPOCH_TIME;
