@@ -68,6 +68,7 @@ public class EpochScheduler : MonoBehaviour
             if(epochsRemaining <= 0) {
                 //Decrement the epoch index set.
                 epochSetRemaining--;
+                //Calculate the index in the set of epochs.
                 epochSetIndex = EPOCH_SETS.Length - epochSetRemaining;
                 epochSize = EPOCH_SETS[epochSetIndex];
                 epochsRemaining = EPOCH_AMOUNT;
