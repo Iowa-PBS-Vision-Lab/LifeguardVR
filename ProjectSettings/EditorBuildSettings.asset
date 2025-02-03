@@ -83,9 +83,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/TrajectoryBlock.unity
     guid: fe700a956a7956d4d961bfd4f80cf704
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/EndScreen.unity
     guid: c1c9794b94bfe2941a15585cb200188e
+  - enabled: 1
+    path: Assets/Scenes/pool_test.unity
+    guid: 08791ddab84794639aae86e38cfeea5d
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: bfa1182bd221b4ca89619141f66f1260,
       type: 2}
