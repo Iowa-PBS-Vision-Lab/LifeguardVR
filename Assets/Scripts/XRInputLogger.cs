@@ -9,13 +9,11 @@ public class XRInputLogger : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     static void CreateLogger()
     {
-        if (FindObjectOfType<XRInputLogger>() == null)
-        {
-            GameObject loggerObject = new GameObject("XRInputLogger");
-            loggerObject.AddComponent<XRInputLogger>();
-            DontDestroyOnLoad(loggerObject); // Keeps it alive across scenes
-            Debug.Log("Created XRInputLogger GameObject and attached script.");
-        }
+        GameObject loggerObject = new GameObject("XRInputLogger");
+        XRInputLogger logger = loggerObject.AddComponent<XRInputLogger>();
+        DontDestroyOnLoad(loggerObject);
+        Debug.Log("XRInputLogger Created");
+        logger.Start();
     }
     private InputDevice leftController;
     private InputDevice rightController;
@@ -28,11 +26,13 @@ public class XRInputLogger : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("XRInputLogger Started");
         InitializeDevices();
 
         // Define the folder and file path inside persistent data path
-        folderPath = Path.Combine(Application.persistentDataPath, "logging_data");
+        folderPath = Path.Combine(Application.dataPath, "loggingData");
         filePath = Path.Combine(folderPath, "XRInputLog.csv");
+        Debug.Log($"Logging to: {filePath}");
 
         // Create the folder if it does not exist
         if (!Directory.Exists(folderPath))
@@ -67,7 +67,7 @@ public class XRInputLogger : MonoBehaviour
 
         if (inputDetected)
         {
-            Debug.Log("--- XR Input Event Logged to CSV ---");
+            Debug.Log(Application.dataPath);
         }
     }
 
