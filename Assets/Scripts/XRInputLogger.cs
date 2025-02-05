@@ -6,6 +6,17 @@ using System;
 
 public class XRInputLogger : MonoBehaviour
 {
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    static void CreateLogger()
+    {
+        if (FindObjectOfType<XRInputLogger>() == null)
+        {
+            GameObject loggerObject = new GameObject("XRInputLogger");
+            loggerObject.AddComponent<XRInputLogger>();
+            DontDestroyOnLoad(loggerObject); // Keeps it alive across scenes
+            Debug.Log("Created XRInputLogger GameObject and attached script.");
+        }
+    }
     private InputDevice leftController;
     private InputDevice rightController;
     private InputDevice leftHand;
