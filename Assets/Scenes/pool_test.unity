@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 193902871}
   - component: {fileID: 193902870}
   - component: {fileID: 193902869}
+  - component: {fileID: 193902873}
   m_Layer: 0
   m_Name: LeftHand Controller
   m_TagString: Untagged
@@ -645,6 +646,18 @@ MonoBehaviour:
     m_Reference: {fileID: 7779212132400271959, guid: c348712bda248c246b8c49b3db54643f,
       type: 3}
   m_ButtonPressPoint: 0.5
+--- !u!114 &193902873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193902867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cac3d59eaa5822749888d23d847a03cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &292992338
 GameObject:
   m_ObjectHideFlags: 0
@@ -1189,7 +1202,19 @@ MonoBehaviour:
   m_StartingSelectedInteractable: {fileID: 0}
   m_HoverEntered:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 417020512}
+        m_TargetAssemblyTypeName: SelectSwimmer, Assembly-CSharp
+        m_MethodName: HoverOverSwimmer
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   m_HoverExited:
     m_PersistentCalls:
       m_Calls: []
@@ -1246,7 +1271,7 @@ MonoBehaviour:
   m_HapticHoverCancelDuration: 0
   m_LineType: 0
   m_BlendVisualLinePoints: 1
-  m_MaxRaycastDistance: 10
+  m_MaxRaycastDistance: 500
   m_RayOriginTransform: {fileID: 0}
   m_ReferenceFrame: {fileID: 0}
   m_Velocity: 16
@@ -1263,7 +1288,7 @@ MonoBehaviour:
   m_RaycastMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RaycastTriggerInteraction: 1
+  m_RaycastTriggerInteraction: 2
   m_HitClosestOnly: 0
   m_HoverToSelect: 0
   m_HoverTimeToSelect: 0.5
@@ -1747,7 +1772,7 @@ Transform:
   m_Children:
   - {fileID: 319157988}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!43 &846691346
 Mesh:
@@ -2175,7 +2200,7 @@ Transform:
   - {fileID: 785368677}
   - {fileID: 1536435342}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &1536435340
 GameObject:
@@ -2237,7 +2262,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1573566383}
   - component: {fileID: 1573566382}
-  - component: {fileID: 1573566381}
   - component: {fileID: 1573566384}
   m_Layer: 0
   m_Name: Main Camera
@@ -2246,14 +2270,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &1573566381
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1573566380}
-  m_Enabled: 1
 --- !u!20 &1573566382
 Camera:
   m_ObjectHideFlags: 0
