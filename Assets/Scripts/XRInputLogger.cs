@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.XR;
 using System.Collections.Generic;
+using System.IO;
+using System;
 
 public class XRInputLogger : MonoBehaviour
 {
@@ -10,31 +12,51 @@ public class XRInputLogger : MonoBehaviour
     private InputDevice rightHand;
 
     private Dictionary<string, bool> buttonStates = new Dictionary<string, bool>();
+    private string folderPath;
+    private string filePath;
 
     void Start()
     {
         InitializeDevices();
+
+        // Define the folder and file path inside persistent data path
+        folderPath = Path.Combine(Application.persistentDataPath, "logging_data");
+        filePath = Path.Combine(folderPath, "XRInputLog.csv");
+
+        // Create the folder if it does not exist
+        if (!Directory.Exists(folderPath))
+        {
+            Directory.CreateDirectory(folderPath);
+            Debug.Log($"Created folder: {folderPath}");
+        }
+
+        // If the file does not exist, write headers
+        if (!File.Exists(filePath))
+        {
+            using (StreamWriter writer = new StreamWriter(filePath, false))
+            {
+                writer.WriteLine("Timestamp,Device,Input,Value");
+            }
+            Debug.Log($"Created log file: {filePath}");
+        }
     }
 
     void Update()
     {
-        // Reinitialize devices if lost
         if (!leftController.isValid || !rightController.isValid || !leftHand.isValid || !rightHand.isValid)
         {
             InitializeDevices();
         }
 
-        // Log controller inputs and hand tracking
         bool inputDetected = false;
         inputDetected |= LogControllerInput(leftController, "Left Controller");
         inputDetected |= LogControllerInput(rightController, "Right Controller");
         inputDetected |= LogHandTracking(leftHand, "Left Hand");
         inputDetected |= LogHandTracking(rightHand, "Right Hand");
 
-        // Log only if an input event occurred
         if (inputDetected)
         {
-            Debug.Log($"--- XR Input Event ---");
+            Debug.Log("--- XR Input Event Logged to CSV ---");
         }
     }
 
@@ -67,18 +89,16 @@ public class XRInputLogger : MonoBehaviour
         if (!device.isValid) return false;
         bool inputDetected = false;
 
-        // Check buttons
         inputDetected |= CheckButton(device, CommonUsages.primaryButton, $"{name}: Primary Button");
         inputDetected |= CheckButton(device, CommonUsages.secondaryButton, $"{name}: Secondary Button");
         inputDetected |= CheckButton(device, CommonUsages.menuButton, $"{name}: Menu Button");
 
-        // Check trigger and grip
         inputDetected |= CheckAxis(device, CommonUsages.trigger, $"{name}: Trigger");
         inputDetected |= CheckAxis(device, CommonUsages.grip, $"{name}: Grip");
 
-        // Check thumbstick movement
         if (device.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 thumbstick) && thumbstick.magnitude > 0.1f)
         {
+            LogToCSV(name, "Thumbstick", thumbstick.ToString());
             Debug.Log($"{name}: Thumbstick Moved {thumbstick}");
             inputDetected = true;
         }
@@ -91,24 +111,21 @@ public class XRInputLogger : MonoBehaviour
         if (!device.isValid) return false;
         bool inputDetected = false;
 
-        // Log hand position
         if (device.TryGetFeatureValue(CommonUsages.devicePosition, out Vector3 position))
         {
+            LogToCSV(name, "Position", position.ToString());
             Debug.Log($"{name} Position: {position}");
             inputDetected = true;
         }
 
-        // Log hand rotation
         if (device.TryGetFeatureValue(CommonUsages.deviceRotation, out Quaternion rotation))
         {
+            LogToCSV(name, "Rotation", rotation.eulerAngles.ToString());
             Debug.Log($"{name} Rotation: {rotation.eulerAngles}");
             inputDetected = true;
         }
 
-        // Log grip (fist)
         inputDetected |= CheckAxis(device, CommonUsages.grip, $"{name} Grip");
-
-        // Log index finger pinch
         inputDetected |= CheckAxis(device, CommonUsages.trigger, $"{name} Index Finger Pinch");
 
         return inputDetected;
@@ -123,6 +140,7 @@ public class XRInputLogger : MonoBehaviour
             buttonStates[label] = pressed;
             if (pressed)
             {
+                LogToCSV(label, "Pressed", "1");
                 Debug.Log($"{label}: Pressed");
                 return true;
             }
@@ -134,9 +152,18 @@ public class XRInputLogger : MonoBehaviour
     {
         if (device.TryGetFeatureValue(axis, out float value) && value > 0.1f)
         {
+            LogToCSV(label, "Value", value.ToString("F2"));
             Debug.Log($"{label}: {value}");
             return true;
         }
         return false;
+    }
+
+    void LogToCSV(string device, string input, string value)
+    {
+        using (StreamWriter writer = new StreamWriter(filePath, true))
+        {
+            writer.WriteLine($"{DateTime.UtcNow},{device},{input},{value}");
+        }
     }
 }
