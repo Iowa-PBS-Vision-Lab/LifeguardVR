@@ -15,6 +15,8 @@ public class EpochScheduler : MonoBehaviour
     public int EPOCH_AMOUNT = 10;
     [SerializeField]
     public GameObject swimmer;
+    private int drownId = 0;
+    private int swimmerId = 0;
     public List<GameObject> swimmerSet = new List<GameObject>();
     private float timeRemaining;
     private int epochsRemaining;
@@ -38,6 +40,10 @@ public class EpochScheduler : MonoBehaviour
             var temp_x = UnityEngine.Random.Range(31.0f, -40.0f);
             //Grab prefab "swimmer" and instantiate copies.
             var temp = Instantiate(swimmer);
+            temp.name  = "Swimmer" + swimmerId.ToString();
+            //Name the collider for raycasting, rember to patch if we add extra game objects to the human male prefab.
+            temp.transform.GetChild(0).gameObject.name = "Collider" + swimmerId.ToString();
+            swimmerId++;
             temp.GetComponent<Transform>().position = new Vector3(temp_x,0,temp_z);
             //Add swimmer to our list, this isn't for rendering or the engine, but to track who is on screen for data output as well as culling/addition.
             swimmerSet.Add(temp);
