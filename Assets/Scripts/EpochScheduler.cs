@@ -15,7 +15,7 @@ public class EpochScheduler : MonoBehaviour
     public int EPOCH_AMOUNT = 10;
     [SerializeField]
     public GameObject swimmer;
-    private int drownId = 0;
+    public int drownId = 0;
     private int swimmerId = 0;
     public List<GameObject> swimmerSet = new List<GameObject>();
     private float timeRemaining;
@@ -30,6 +30,17 @@ public class EpochScheduler : MonoBehaviour
     public int calculateWave(){
         //Simple calculation of the change in size of our swimmingpool set.
         return epochSize - swimmerSet.Count;
+    }
+    private void pickDrowner(){
+        //Sort through the swimmers and remove any remaining drowners so we don't have duplicates.
+        for (int i = 0; i < swimmerSet.Count; i++){
+            if(swimmerSet[i].name.Contains("(Drowner)")){
+                swimmerSet[i].name = swimmerSet[i].name.Replace("(Drowner)", "");
+            }
+        }
+        //Add the drowner attribute to a random swimmer.
+        drownId = UnityEngine.Random.Range(0, swimmerSet.Count);
+        swimmerSet[drownId].name += "(Drowner)";
     }
     private void spawnSwimmers(int count){
         //Add "count" number of swimmer objects in randomized fashion.
@@ -87,6 +98,8 @@ public class EpochScheduler : MonoBehaviour
                 else if(temp < 0){
                     cullSwimmers(temp*-1);
                 }
+                //Pick a drowner from our new set.
+                pickDrowner();
             }
             //Decrement the epoch.
             timeRemaining = EPOCH_TIME;
@@ -106,6 +119,8 @@ public class EpochScheduler : MonoBehaviour
         epochsRemaining = EPOCH_AMOUNT;
         //Spawn in the people.
         spawnSwimmers(EPOCH_SETS[0]);
+        //Pick a drowner.
+        pickDrowner();
         //Repeatedly update the debug screen.
         InvokeRepeating("writeToDebug", 1f, 0.1f);
     }

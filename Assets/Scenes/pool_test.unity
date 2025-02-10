@@ -136,7 +136,6 @@ GameObject:
   - component: {fileID: 193902871}
   - component: {fileID: 193902870}
   - component: {fileID: 193902869}
-  - component: {fileID: 193902873}
   m_Layer: 0
   m_Name: LeftHand Controller
   m_TagString: Untagged
@@ -646,19 +645,6 @@ MonoBehaviour:
     m_Reference: {fileID: 7779212132400271959, guid: c348712bda248c246b8c49b3db54643f,
       type: 3}
   m_ButtonPressPoint: 0.5
---- !u!114 &193902873
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 193902867}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cac3d59eaa5822749888d23d847a03cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rayInteractor: {fileID: 0}
 --- !u!1 &292992338
 GameObject:
   m_ObjectHideFlags: 0
@@ -811,7 +797,6 @@ GameObject:
   - component: {fileID: 319157992}
   - component: {fileID: 319157991}
   - component: {fileID: 319157990}
-  - component: {fileID: 319157989}
   - component: {fileID: 319157994}
   m_Layer: 0
   m_Name: Plane (1)
@@ -835,20 +820,6 @@ Transform:
   m_Father: {fileID: 843877208}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &319157989
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 319157987}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 902899319}
 --- !u!33 &319157990
 MeshFilter:
   m_ObjectHideFlags: 10
@@ -1203,19 +1174,7 @@ MonoBehaviour:
   m_StartingSelectedInteractable: {fileID: 0}
   m_HoverEntered:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 417020512}
-        m_TargetAssemblyTypeName: SelectSwimmer, Assembly-CSharp
-        m_MethodName: HoverOverSwimmer
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
   m_HoverExited:
     m_PersistentCalls:
       m_Calls: []
@@ -1660,11 +1619,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 843877208}
-  - component: {fileID: 843877207}
-  - component: {fileID: 843877206}
   - component: {fileID: 843877205}
   - component: {fileID: 843877204}
-  - component: {fileID: 843877203}
   m_Layer: 0
   m_Name: WaterTest
   m_TagString: Untagged
@@ -1672,20 +1628,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!64 &843877203
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 843877202}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 846691346}
 --- !u!33 &843877204
 MeshFilter:
   m_ObjectHideFlags: 10
@@ -1736,30 +1678,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &843877206
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 843877202}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ca002da428252441b92f28d83c8a65f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &843877207
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 843877202}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8233d90336aea43098adf6dbabd606a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &843877208
 Transform:
   m_ObjectHideFlags: 0
@@ -2347,6 +2265,7 @@ MonoBehaviour:
   EPOCH_TIME: 10
   EPOCH_AMOUNT: 2
   swimmer: {fileID: 1858703952802759407, guid: 99b8364a11433ba458ff666da7d6900d, type: 3}
+  drownId: 0
   swimmerSet: []
   outputText: {fileID: 292992340}
 --- !u!1 &1722328073
