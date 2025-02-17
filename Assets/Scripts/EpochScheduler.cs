@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Linq;
 
 public class EpochScheduler : MonoBehaviour
 {
@@ -22,6 +23,8 @@ public class EpochScheduler : MonoBehaviour
     private int epochsRemaining;
     private int epochSetIndex;
     private int epochSetRemaining;
+    private List<int> spawnx = new List<int>();
+    private List<int> spawnz = new List<int>();
     private int epochSize;
     [SerializeField]
     private TMP_Text outputText;
@@ -45,11 +48,15 @@ public class EpochScheduler : MonoBehaviour
     private void spawnSwimmers(int count){
         //Add "count" number of swimmer objects in randomized fashion.
         //We should make better "randomization" to avoid overlapping.
+
         for (int i = 0; i < count; i++) {
             //This is just an eyeballed range.
-            var temp_z = UnityEngine.Random.Range(-40.0f, -190.0f);
-            var temp_x = UnityEngine.Random.Range(31.0f, -40.0f);
             //Grab prefab "swimmer" and instantiate copies.
+            var temp_x = spawnx[UnityEngine.Random.Range(0, spawnx.Count)];
+            spawnz.Remove(temp_x);
+            var temp_z = spawnz[UnityEngine.Random.Range(0, spawnz.Count)];
+            spawnx.Remove(temp_z);
+
             var temp = Instantiate(swimmer);
             temp.name  = "Swimmer" + swimmerId.ToString();
             //Name the collider for raycasting, rember to patch if we add extra game objects to the human male prefab.
@@ -63,6 +70,8 @@ public class EpochScheduler : MonoBehaviour
     private void cullSwimmers(int count){
         //Remove "count" number of swimmer objects.
         for (int i = 0; i < count; i++) {
+            spawnx.Add((int)Math.Round(swimmerSet[0].GetComponent<Transform>().position.x));
+            spawnz.Add((int)Math.Round(swimmerSet[0].GetComponent<Transform>().position.z));
             Destroy(swimmerSet[0]);
             swimmerSet.Remove(swimmerSet[0]);
         }
@@ -108,7 +117,25 @@ public class EpochScheduler : MonoBehaviour
         }
     }
 
+    //This merely aligns our swimmers with the pool.
+    //I'm not a massive fan of this solution but it works for the time being.
+    private void formatCoordinates(){
+        //Sort through both lists and align.
+        for (int i = 0; i < spawnz.Count; i++){
+            spawnz[i]=(spawnz[i]*2)-215;
+        }
+
+        for (int i = 0; i < spawnx.Count; i++){
+            spawnx[i]=(spawnx[i]*2)-30;
+        }
+    }
+
     void Start(){
+        //Get our coordinates for the swimmers
+        spawnz = Enumerable.Range(0, 90).ToList();
+        spawnx = Enumerable.Range(0, 35).ToList();
+        formatCoordinates();
+
         //Write to the debug screne.
         writeToDebug();
         //Initialize our values.
