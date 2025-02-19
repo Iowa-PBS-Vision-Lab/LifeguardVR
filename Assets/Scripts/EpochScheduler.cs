@@ -8,8 +8,7 @@ using System.Linq;
 
 public class EpochScheduler : MonoBehaviour
 {
-    [SerializeField]
-    public int[] EPOCH_SETS = {8, 12, 16, 20, 8, 12, 16, 20};
+    public int[] EPOCH_SETS = {4, 20, 4, 20, 8, 12, 16, 20};
     [SerializeField]
     public float EPOCH_TIME = 10f;
     [SerializeField]
