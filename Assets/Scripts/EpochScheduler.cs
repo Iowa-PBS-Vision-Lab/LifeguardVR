@@ -68,6 +68,7 @@ public class EpochScheduler : MonoBehaviour
     }
     private void cullSwimmers(int count){
         //Remove "count" number of swimmer objects.
+        //We also want to re-append their spawnpoint to our open coordinates.
         for (int i = 0; i < count; i++) {
             spawnx.Add((int)Math.Round(swimmerSet[0].GetComponent<Transform>().position.x));
             spawnz.Add((int)Math.Round(swimmerSet[0].GetComponent<Transform>().position.z));
@@ -85,29 +86,34 @@ public class EpochScheduler : MonoBehaviour
     private void runEpoch(){
         //Counts down the remaining time left.
         timeRemaining -= Time.deltaTime;
-        if (timeRemaining <= 0) { 
-            if(epochSetIndex >= EPOCH_SETS.Length){
-                //stops the game when we run out of epochs.
-                UnityEditor.EditorApplication.isPlaying = false;
-            }
+        if (timeRemaining <= 0) {
             if(epochsRemaining <= 0) {
                 //Decrement the epoch index set.
                 epochSetRemaining--;
                 //Calculate the index in the set of epochs.
                 epochSetIndex = EPOCH_SETS.Length - epochSetRemaining;
-                epochSize = EPOCH_SETS[epochSetIndex];
-                epochsRemaining = EPOCH_AMOUNT;
-                //Calculate if we must add or remove swimmers.
-                //*Note that this feature is purely here for testing the epoch structure, and will be changed/improved completely.
-                var temp = calculateWave();
-                if(temp > 0){
-                    spawnSwimmers(temp);
+                if(epochSetIndex >= EPOCH_SETS.Length){
+                    //Stops the game when we run out of epochs.
+                    //For in editor. Do note that it *will* execute all other code in this function when enabled.
+                    UnityEditor.EditorApplication.isPlaying = false;
+                    //For compiled code.
+                    Application.Quit();
                 }
-                else if(temp < 0){
-                    cullSwimmers(temp*-1);
+                else{
+                    epochSize = EPOCH_SETS[epochSetIndex];
+                    epochsRemaining = EPOCH_AMOUNT;
+                    //Calculate if we must add or remove swimmers.
+                    //*Note that this feature is purely here for testing the epoch structure, and will be changed/improved completely.
+                    var temp = calculateWave();
+                    if(temp > 0){
+                        spawnSwimmers(temp);
+                    }
+                    else if(temp < 0){
+                        cullSwimmers(temp*-1);
+                    }
+                    //Pick a drowner from our new set.
+                    pickDrowner();
                 }
-                //Pick a drowner from our new set.
-                pickDrowner();
             }
             //Decrement the epoch.
             timeRemaining = EPOCH_TIME;
