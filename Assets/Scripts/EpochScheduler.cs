@@ -33,16 +33,23 @@ public class EpochScheduler : MonoBehaviour
         //Simple calculation of the change in size of our swimmingpool set.
         return epochSize - swimmerSet.Count;
     }
-    private void pickDrowner(){
-        //Sort through the swimmers and remove any remaining drowners so we don't have duplicates.
-        for (int i = 0; i < swimmerSet.Count; i++){
-            if(swimmerSet[i].name.Contains("(Drowner)")){
+    private void pickDrowner()
+    {
+        // Clear any existing (Drowner) from all swimmers
+        for (int i = 0; i < swimmerSet.Count; i++)
+        {
+            if (swimmerSet[i].name.Contains("(Drowner)"))
+            {
                 swimmerSet[i].name = swimmerSet[i].name.Replace("(Drowner)", "");
             }
         }
-        //Add the drowner attribute to a random swimmer.
+        // Randomly pick one
         drownId = UnityEngine.Random.Range(0, swimmerSet.Count);
-        swimmerSet[drownId].name += "(Drowner)";
+        var drowner = swimmerSet[drownId];
+        drowner.name += "(Drowner)";
+
+        // Log the event
+        XRInputLogger.LogCustomEvent($"EpochScheduler picked drowner: {drowner.name}");
     }
     private void spawnSwimmers(int count){
         //Add "count" number of swimmer objects in randomized fashion.
