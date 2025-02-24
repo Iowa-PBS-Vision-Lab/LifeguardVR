@@ -9,7 +9,7 @@ public class FloatingAnimationScript : MonoBehaviour
     void Start()
     {
         //Set random speed, just enough to seem random.
-        speed = Random.Range(0.9f, 1.1f);;
+        speed = Random.Range(0.95f, 1.05f);;
         GetComponent<Animator>().speed = speed;
     }
 }
