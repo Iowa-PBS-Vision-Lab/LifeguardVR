@@ -797,7 +797,6 @@ GameObject:
   - component: {fileID: 319157992}
   - component: {fileID: 319157991}
   - component: {fileID: 319157990}
-  - component: {fileID: 319157989}
   - component: {fileID: 319157994}
   m_Layer: 0
   m_Name: Plane (1)
@@ -821,20 +820,6 @@ Transform:
   m_Father: {fileID: 843877208}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &319157989
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 319157987}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 902899319}
 --- !u!33 &319157990
 MeshFilter:
   m_ObjectHideFlags: 10
@@ -1246,7 +1231,7 @@ MonoBehaviour:
   m_HapticHoverCancelDuration: 0
   m_LineType: 0
   m_BlendVisualLinePoints: 1
-  m_MaxRaycastDistance: 10
+  m_MaxRaycastDistance: 500
   m_RayOriginTransform: {fileID: 0}
   m_ReferenceFrame: {fileID: 0}
   m_Velocity: 16
@@ -1263,7 +1248,7 @@ MonoBehaviour:
   m_RaycastMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RaycastTriggerInteraction: 1
+  m_RaycastTriggerInteraction: 2
   m_HitClosestOnly: 0
   m_HoverToSelect: 0
   m_HoverTimeToSelect: 0.5
@@ -1464,6 +1449,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cac3d59eaa5822749888d23d847a03cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rayInteractor: {fileID: 417020510}
 --- !u!1 &493884045
 GameObject:
   m_ObjectHideFlags: 0
@@ -1633,11 +1619,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 843877208}
-  - component: {fileID: 843877207}
-  - component: {fileID: 843877206}
   - component: {fileID: 843877205}
   - component: {fileID: 843877204}
-  - component: {fileID: 843877203}
   m_Layer: 0
   m_Name: WaterTest
   m_TagString: Untagged
@@ -1645,20 +1628,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!64 &843877203
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 843877202}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 846691346}
 --- !u!33 &843877204
 MeshFilter:
   m_ObjectHideFlags: 10
@@ -1709,30 +1678,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &843877206
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 843877202}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ca002da428252441b92f28d83c8a65f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &843877207
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 843877202}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8233d90336aea43098adf6dbabd606a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &843877208
 Transform:
   m_ObjectHideFlags: 0
@@ -1747,7 +1692,7 @@ Transform:
   m_Children:
   - {fileID: 319157988}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!43 &846691346
 Mesh:
@@ -2175,7 +2120,7 @@ Transform:
   - {fileID: 785368677}
   - {fileID: 1536435342}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &1536435340
 GameObject:
@@ -2237,7 +2182,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1573566383}
   - component: {fileID: 1573566382}
-  - component: {fileID: 1573566381}
   - component: {fileID: 1573566384}
   m_Layer: 0
   m_Name: Main Camera
@@ -2246,14 +2190,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &1573566381
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1573566380}
-  m_Enabled: 1
 --- !u!20 &1573566382
 Camera:
   m_ObjectHideFlags: 0
@@ -2325,10 +2261,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f40936c3b10bc7945a68eb2cc41eb13e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EPOCH_SETS: 080000000c0000001000000014000000080000000c0000001000000014000000
+  EPOCH_SETS: 04000000140000000400000014000000080000000c0000001000000014000000
   EPOCH_TIME: 10
   EPOCH_AMOUNT: 2
-  swimmer: {fileID: 1858703952802759407, guid: 99b8364a11433ba458ff666da7d6900d, type: 3}
+  swimmer: {fileID: 4853234817255621017, guid: d807fea4c27839a46878e57dcdf4e245, type: 3}
+  drownId: 0
   swimmerSet: []
   outputText: {fileID: 292992340}
 --- !u!1 &1722328073
