@@ -32,7 +32,7 @@ public class SubjectSubmit : MonoBehaviour
             {
                 //Write data to log.
                 string tempUserID = dataClean(idInfo.text);
-                PlayerPrefs.SetString("subjectID", tempUserID);
+                PlayerPrefs.SetString("Hand", tempUserID);
                 sw.WriteLine("Subject ID: ," + tempUserID);
                 sw.WriteLine("Age: ," + dataClean(ageInfo.text));
                 sw.WriteLine("Gender: ," + dataClean(genderInfo.text));
