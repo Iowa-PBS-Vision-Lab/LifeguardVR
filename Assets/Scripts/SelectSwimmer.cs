@@ -3,47 +3,66 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using System;
+
 public class SelectSwimmer : MonoBehaviour
 {
-    //The raycast of the hand we want to use...
+    // The raycast interactor objects for the left and right hands.
     public GameObject LeftInteractor;
     public GameObject RightInteractor;
     private bool triggerValue;
-    // Update is called once per frame
-    void Start(){
-        if(PlayerPrefs.GetString("Hand") == "L"){
+
+    void Start()
+    {
+        if (PlayerPrefs.GetString("Hand") == "L")
+        {
             LeftInteractor.GetComponent<XRInteractorLineVisual>().enabled = true;
         }
-        else{
+        else
+        {
             RightInteractor.GetComponent<XRInteractorLineVisual>().enabled = true;
         }
     }
+
     void Update()
     {
         var devices = new List<UnityEngine.XR.InputDevice>();
-        if(PlayerPrefs.GetString("Hand") == "L"){
+
+        if (PlayerPrefs.GetString("Hand") == "L")
+        {
             UnityEngine.XR.InputDevices.GetDevicesAtXRNode(UnityEngine.XR.XRNode.LeftHand, devices);
         }
-        else{
+        else
+        {
             UnityEngine.XR.InputDevices.GetDevicesAtXRNode(UnityEngine.XR.XRNode.RightHand, devices);
         }
-        if(devices.Count > 0){
+
+        if (devices.Count > 0)
+        {
             var device = devices[0];
-            if (LeftInteractor.GetComponent<XRRayInteractor>().TryGetCurrent3DRaycastHit(out RaycastHit hitL) && PlayerPrefs.GetString("Hand") == "L") {
-                //Print the name of the interactor to the console.
-                if (hitL.collider.transform.parent.gameObject.name.Contains("(Drowner)") && device.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out triggerValue) && triggerValue){
-                    Debug.Log("The player has found the drowner!");
+
+            // For left hand
+            if (PlayerPrefs.GetString("Hand") == "L" && 
+                LeftInteractor.GetComponent<XRRayInteractor>().TryGetCurrent3DRaycastHit(out RaycastHit hitL))
+            {
+                // Check if the hit object is a drowner and if the trigger is pressed.
+                if (hitL.collider.transform.parent.gameObject.name.Contains("(Drowner)") &&
+                    device.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out triggerValue) && triggerValue)
+                {
+                    // Log the user swimmer selection event.
+                    XRInputLogger.LogUserSwimmerSelection("User found drowner: " + hitL.collider.transform.parent.gameObject.name);
                 }
             }
 
-            if(RightInteractor.GetComponent<XRRayInteractor>().TryGetCurrent3DRaycastHit(out RaycastHit hitR) && PlayerPrefs.GetString("Hand") == "R"){
-                if (hitR.collider.transform.parent.gameObject.name.Contains("(Drowner)") && device.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out triggerValue) && triggerValue){
-                        Debug.Log("The player has found the drowner!");
+            // For right hand
+            if (PlayerPrefs.GetString("Hand") == "R" && 
+                RightInteractor.GetComponent<XRRayInteractor>().TryGetCurrent3DRaycastHit(out RaycastHit hitR))
+            {
+                if (hitR.collider.transform.parent.gameObject.name.Contains("(Drowner)") &&
+                    device.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out triggerValue) && triggerValue)
+                {
+                    XRInputLogger.LogUserSwimmerSelection("User found drowner: " + hitR.collider.transform.parent.gameObject.name);
                 }
             }
-
         }
-        //Double check that we are interacting with a collider of some sort.
-        
     }
 }

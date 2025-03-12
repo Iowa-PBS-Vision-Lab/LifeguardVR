@@ -44,6 +44,7 @@ public class SubjectSubmit : MonoBehaviour
             SceneManager.LoadScene("pool_test");
         }
         else{
+            Debug.Log("Please fill out all fields.");
             MyPanel.GetComponent<Image>().color = new Color(0.4f, 0, 0);
         }
     }
