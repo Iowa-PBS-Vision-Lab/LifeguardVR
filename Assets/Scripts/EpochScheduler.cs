@@ -33,24 +33,28 @@ public class EpochScheduler : MonoBehaviour
         //Simple calculation of the change in size of our swimmingpool set.
         return epochSize - swimmerSet.Count;
     }
-    private void pickDrowner()
+private void pickDrowner()
+{
+    // Clear any existing (Drowner) from all swimmers
+    for (int i = 0; i < swimmerSet.Count; i++)
     {
-        // Clear any existing (Drowner) from all swimmers
-        for (int i = 0; i < swimmerSet.Count; i++)
+        if (swimmerSet[i].name.Contains("(Drowner)"))
         {
-            if (swimmerSet[i].name.Contains("(Drowner)"))
-            {
-                swimmerSet[i].name = swimmerSet[i].name.Replace("(Drowner)", "");
-            }
+            // Log the removal using the epoch scheduler log method.
+            Debug.Log($"EpochScheduler removed drowner: {swimmerSet[i].name}");
+            XRInputLogger.LogEpochSchedulerOutput($"EpochScheduler removed drowner: {swimmerSet[i].name}");
+            swimmerSet[i].name = swimmerSet[i].name.Replace("(Drowner)", "");
         }
-        // Randomly pick one
-        drownId = UnityEngine.Random.Range(0, swimmerSet.Count);
-        var drowner = swimmerSet[drownId];
-        drowner.name += "(Drowner)";
-
-        // Log the event
-        XRInputLogger.LogCustomEvent($"EpochScheduler picked drowner: {drowner.name}");
     }
+    
+    // Randomly pick one
+    drownId = UnityEngine.Random.Range(0, swimmerSet.Count);
+    var drowner = swimmerSet[drownId];
+    drowner.name += "(Drowner)";
+
+    // Log the event using the epoch scheduler log method.
+    XRInputLogger.LogEpochSchedulerOutput($"EpochScheduler picked drowner: {drowner.name}");
+}
     private void spawnSwimmers(int count){
         //Add "count" number of swimmer objects in randomized fashion.
         //We should make better "randomization" to avoid overlapping.
