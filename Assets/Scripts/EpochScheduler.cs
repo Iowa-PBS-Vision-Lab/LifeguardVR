@@ -8,7 +8,7 @@ using System.Linq;
 
 public class EpochScheduler : MonoBehaviour
 {
-    public int[] EPOCH_SETS = {4, 20, 4, 20, 8, 12, 16, 20};
+    public int[] EPOCH_SETS = {20, 20, 4, 20, 8, 12, 16, 20};
     [SerializeField]
     public float EPOCH_TIME = 10f;
     [SerializeField]
@@ -127,18 +127,18 @@ public class EpochScheduler : MonoBehaviour
     private void formatCoordinates(){
         //Sort through both lists and align.
         for (int i = 0; i < spawnz.Count; i++){
-            spawnz[i]=(spawnz[i]*2)-215;
+            spawnz[i]=(spawnz[i])-107;
         }
 
         for (int i = 0; i < spawnx.Count; i++){
-            spawnx[i]=(spawnx[i]*2)-30;
+            spawnx[i]=(spawnx[i])-20;
         }
     }
 
     void Start(){
         //Get our coordinates for the swimmers
         spawnz = Enumerable.Range(0, 90).ToList();
-        spawnx = Enumerable.Range(0, 35).ToList();
+        spawnx = Enumerable.Range(0, 37).ToList();
         formatCoordinates();
 
         //Write to the debug screne.
