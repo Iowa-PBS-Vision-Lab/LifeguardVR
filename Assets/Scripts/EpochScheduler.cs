@@ -30,38 +30,28 @@ public class EpochScheduler : MonoBehaviour
     private float fps;
 
     public int calculateWave(){
-        //Simple calculation of the change in size of our swimmingpool set.
+        // Simple calculation of the change in size of our swimming pool set.
         return epochSize - swimmerSet.Count;
     }
-private void pickDrowner()
-{
-    // Clear any existing (Drowner) from all swimmers
-    for (int i = 0; i < swimmerSet.Count; i++)
-    {
-        if (swimmerSet[i].name.Contains("(Drowner)"))
-        {
-            // Log the removal using the epoch scheduler log method.
-            Debug.Log($"EpochScheduler removed drowner: {swimmerSet[i].name}");
-            XRInputLogger.LogEpochSchedulerOutput($"EpochScheduler removed drowner: {swimmerSet[i].name}");
-            swimmerSet[i].name = swimmerSet[i].name.Replace("(Drowner)", "");
+
+    private void pickDrowner(){
+        // Clear any existing (Drowner) from all swimmers.
+        for (int i = 0; i < swimmerSet.Count; i++){
+            if(swimmerSet[i].name.Contains("(Drowner)")){
+                swimmerSet[i].name = swimmerSet[i].name.Replace("(Drowner)", "");
+            }
         }
+        // Randomly pick one.
+        drownId = UnityEngine.Random.Range(0, swimmerSet.Count);
+        swimmerSet[drownId].name += "(Drowner)";
+        // Log the event.
+        XRInputLogger.LogCustomEvent($"EpochScheduler picked drowner: {swimmerSet[drownId].name}");
     }
-    
-    // Randomly pick one
-    drownId = UnityEngine.Random.Range(0, swimmerSet.Count);
-    var drowner = swimmerSet[drownId];
-    drowner.name += "(Drowner)";
 
-    // Log the event using the epoch scheduler log method.
-    XRInputLogger.LogEpochSchedulerOutput($"EpochScheduler picked drowner: {drowner.name}");
-}
     private void spawnSwimmers(int count){
-        //Add "count" number of swimmer objects in randomized fashion.
-        //We should make better "randomization" to avoid overlapping.
-
+        // Add "count" number of swimmer objects in a randomized fashion.
         for (int i = 0; i < count; i++) {
-            //This is just an eyeballed range.
-            //Grab prefab "swimmer" and instantiate copies.
+            // This is just an eyeballed range.
             var temp_x = spawnx[UnityEngine.Random.Range(0, spawnx.Count)];
             spawnz.Remove(temp_x);
             var temp_z = spawnz[UnityEngine.Random.Range(0, spawnz.Count)];
@@ -69,107 +59,113 @@ private void pickDrowner()
 
             var temp = Instantiate(swimmer);
             temp.name  = "Swimmer" + swimmerId.ToString();
-            //Name the collider for raycasting, rember to patch if we add extra game objects to the human male prefab.
+            // Name the collider for raycasting.
             temp.transform.GetChild(0).gameObject.name = "Collider" + swimmerId.ToString();
             swimmerId++;
-            temp.GetComponent<Transform>().position = new Vector3(temp_x,0,temp_z);
-            //Add swimmer to our list, this isn't for rendering or the engine, but to track who is on screen for data output as well as culling/addition.
+            temp.GetComponent<Transform>().position = new Vector3(temp_x, 0, temp_z);
             swimmerSet.Add(temp);
+            // Log the spawn event.
+            XRInputLogger.LogCustomEvent($"EpochScheduler spawned: {temp.name}");
         }
     }
+
     private void cullSwimmers(int count){
-        //Remove "count" number of swimmer objects.
-        //We also want to re-append their spawnpoint to our open coordinates.
+        // Remove "count" number of swimmer objects.
+        // Also re-append their spawnpoint to our open coordinates.
         for (int i = 0; i < count; i++) {
+            // Log the culling event.
+            XRInputLogger.LogCustomEvent($"EpochScheduler culled: {swimmerSet[0].name}");
             spawnx.Add((int)Math.Round(swimmerSet[0].GetComponent<Transform>().position.x));
             spawnz.Add((int)Math.Round(swimmerSet[0].GetComponent<Transform>().position.z));
             Destroy(swimmerSet[0]);
-            swimmerSet.Remove(swimmerSet[0]);
+            swimmerSet.RemoveAt(0);
         }
     }
 
     private void writeToDebug(){
-        //Calculate fps.
-        fps = (int)(1/Time.deltaTime);
-        //Set values to screen.
-        outputText.text  = string.Format("Epochs Left: {0}\nTime Left: {1}\nFPS: {2}\nSet Index: {3}", epochsRemaining, (int)timeRemaining, fps, epochSetIndex);
+        // Calculate fps.
+        fps = (int)(1 / Time.deltaTime);
+        // Set values to screen.
+        outputText.text = string.Format("Epochs Left: {0}\nTime Left: {1}\nFPS: {2}\nSet Index: {3}",
+            epochsRemaining, (int)timeRemaining, fps, epochSetIndex);
     }
+
     private void runEpoch(){
-        //Counts down the remaining time left.
+        // Count down the remaining time.
         timeRemaining -= Time.deltaTime;
         if (timeRemaining <= 0) {
-            if(epochsRemaining <= 0) {
-                //Decrement the epoch index set.
+            if (epochsRemaining <= 0) {
+                // Decrement the epoch index set.
                 epochSetRemaining--;
-                //Calculate the index in the set of epochs.
+                // Calculate the index in the set of epochs.
                 epochSetIndex = EPOCH_SETS.Length - epochSetRemaining;
-                if(epochSetIndex >= EPOCH_SETS.Length){
-                    //Stops the game when we run out of epochs.
-                    //For in editor. Do note that it *will* execute all other code in this function when enabled.
+                if (epochSetIndex >= EPOCH_SETS.Length) {
+                    // Stop the game when we run out of epochs.
+#if UNITY_EDITOR
                     UnityEditor.EditorApplication.isPlaying = false;
-                    //For compiled code.
+#else
                     Application.Quit();
+#endif
                 }
-                else{
+                else {
+                    // Reset swimmer ID counter at start of new epoch set
+                    swimmerId = 0;
+
                     epochSize = EPOCH_SETS[epochSetIndex];
                     epochsRemaining = EPOCH_AMOUNT;
-                    //Calculate if we must add or remove swimmers.
-                    //*Note that this feature is purely here for testing the epoch structure, and will be changed/improved completely.
-                    var temp = calculateWave();
-                    if(temp > 0){
+                    // Calculate if we must add or remove swimmers.
+                    int temp = calculateWave();
+                    if (temp > 0) {
                         spawnSwimmers(temp);
                     }
-                    else if(temp < 0){
-                        cullSwimmers(temp*-1);
+                    else if (temp < 0) {
+                        cullSwimmers(-temp);
                     }
-                    //Pick a drowner from our new set.
+                    // Pick a drowner from our new set.
                     pickDrowner();
                 }
             }
-            //Decrement the epoch.
+            // Decrement the epoch.
             timeRemaining = EPOCH_TIME;
             epochsRemaining--;
-
         }
     }
 
-    //This merely aligns our swimmers with the pool.
-    //I'm not a massive fan of this solution but it works for the time being.
     private void formatCoordinates(){
-        //Sort through both lists and align.
+        // Align spawnz.
         for (int i = 0; i < spawnz.Count; i++){
-            spawnz[i]=(spawnz[i]*2)-215;
+            spawnz[i] = (spawnz[i] * 2) - 215;
         }
-
+        // Align spawnx.
         for (int i = 0; i < spawnx.Count; i++){
-            spawnx[i]=(spawnx[i]*2)-30;
+            spawnx[i] = (spawnx[i] * 2) - 30;
         }
     }
 
     void Start(){
-        //Get our coordinates for the swimmers
+        // Get coordinates for the swimmers.
         spawnz = Enumerable.Range(0, 90).ToList();
         spawnx = Enumerable.Range(0, 35).ToList();
         formatCoordinates();
 
-        //Write to the debug screne.
+        // Write to the debug screen.
         writeToDebug();
-        //Initialize our values.
+        // Initialize values.
         epochSetRemaining = EPOCH_SETS.Length;
         epochSetIndex = 0;
         epochSize = EPOCH_SETS[epochSetIndex];
         timeRemaining = EPOCH_TIME;
         epochsRemaining = EPOCH_AMOUNT;
-        //Spawn in the people.
+        // Spawn the swimmers.
         spawnSwimmers(EPOCH_SETS[0]);
-        //Pick a drowner.
+        // Pick a drowner.
         pickDrowner();
-        //Repeatedly update the debug screen.
+        // Repeatedly update the debug screen.
         InvokeRepeating("writeToDebug", 1f, 0.1f);
     }
 
     void Update(){
-        //Run the epoch scheduler.
+        // Run the epoch scheduler.
         runEpoch();
     }
 }

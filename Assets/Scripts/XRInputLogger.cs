@@ -5,12 +5,10 @@ using System;
 
 public class XRInputLogger : MonoBehaviour
 {
-    // Remove auto-creation; you now attach this script manually to your main camera.
-
     // Buffer for log lines before flushing to CSV.
     private List<string> eventBuffer = new List<string>();
 
-    // Subject details—set these via inspector or via PlayerPrefs.
+    // Subject details—set these via Inspector or via SubjectSubmit.
     public string subjectID = "DefaultSubject";
     public string age = "N/A";
     public string gender = "N/A";
@@ -21,57 +19,73 @@ public class XRInputLogger : MonoBehaviour
     private string controllerInput = "";
     private string userSwimmerSelection = "";
 
-    // Reference to the head (camera) transform. If not assigned, will default to this.transform.
+    // Reference to the head (camera) transform. If not assigned, defaults to this.transform.
     public Transform headTransform;
 
     private string folderPath;
     private string filePath;
 
+    // Maximum number of swimmers to log (determined externally via EpochScheduler.EPOCH_SETS).
+    private int maxSwimmers = 0;
+
     private void Awake()
     {
-        // Since you're attaching this manually to the main camera, use its transform if headTransform is not set.
+        // If headTransform is not set, default to this.transform.
         if (headTransform == null)
         {
             headTransform = this.transform;
             Debug.Log("[XRInputLogger] headTransform not set in Inspector. Defaulting to this.transform: " + headTransform.name);
         }
 
-        // Load subject details from PlayerPrefs if they were set.
-        subjectID = PlayerPrefs.GetString("subjectID", subjectID);
-        age = PlayerPrefs.GetString("age", age);
-        gender = PlayerPrefs.GetString("gender", gender);
-        handedness = PlayerPrefs.GetString("handedness", handedness);
+        // Load subject details from SubjectSubmit if available.
+        SubjectSubmit subjectSubmit = FindObjectOfType<SubjectSubmit>();
+        subjectID = subjectSubmit?.idInfo?.text ?? "";
+        age = subjectSubmit?.ageInfo?.text ?? "";
+        gender = subjectSubmit?.genderInfo?.text ?? "";
+        handedness = subjectSubmit?.handInfo?.text ?? "";
 
         // Define logging path.
         folderPath = Path.Combine(Application.dataPath, "loggingData");
-
-        // Create a new log file name for each run.
         string runTimestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
         filePath = Path.Combine(folderPath, "InputLog_" + runTimestamp + ".csv");
+
+        // Determine maxSwimmers from an external EpochScheduler.
+        var epochScheduler = FindObjectOfType<EpochScheduler>();
+        if (epochScheduler != null && epochScheduler.EPOCH_SETS != null)
+        {
+            foreach (int val in epochScheduler.EPOCH_SETS)
+            {
+                if (val > maxSwimmers)
+                    maxSwimmers = val;
+            }
+        }
+        else
+        {
+            // If no EpochScheduler is found, default to the current number of swimmers.
+            GameObject[] swimmersFallback = GameObject.FindGameObjectsWithTag("Swimmer");
+            maxSwimmers = swimmersFallback.Length;
+            Debug.LogWarning("[XRInputLogger] EpochScheduler not found. Setting maxSwimmers to current swimmers count: " + maxSwimmers);
+        }
 
         Debug.Log("[XRInputLogger] Awake - New log file created: " + filePath);
     }
 
+    // Use Update to capture positions and rotations.
     private void Update()
     {
         if (headTransform == null)
-        {
-            // Should not happen because we defaulted in Awake, but check anyway.
             return;
-        }
 
         // Capture head pose.
         Vector3 pos = headTransform.position;
         Vector3 rot = headTransform.eulerAngles;
-        // Unity's convention:
-        //   rot.x = Pitch, rot.y = Yaw, rot.z = Roll.
         float headRoll  = rot.z;
         float headPitch = rot.x;
         float headYaw   = rot.y;
 
-        // CSV format:
-        // time, subjectID, age, gender, handedness, epoch scheduler output,
-        // controller input, user swimmer selection, headX, headY, headZ, headRoll, headPitch, headYaw
+        // Build the base CSV line:
+        // Timestamp,SubjectID,Age,Gender,Handedness,EpochSchedulerOutput,ControllerInput,UserSwimmerSelection,
+        // HeadX,HeadY,HeadZ,HeadRoll,HeadPitch,HeadYaw
         string line = string.Format("{0:O},{1},{2},{3},{4},{5},{6},{7},{8:F4},{9:F4},{10:F4},{11:F4},{12:F4},{13:F4}",
             DateTime.UtcNow,
             subjectID,
@@ -85,8 +99,55 @@ public class XRInputLogger : MonoBehaviour
             headRoll, headPitch, headYaw
         );
 
+        // Retrieve swimmers from the EpochScheduler's swimmerSet, if available.
+        EpochScheduler epochScheduler = FindObjectOfType<EpochScheduler>();
+        List<GameObject> swimmers = (epochScheduler != null) ? epochScheduler.swimmerSet : new List<GameObject>();
+
+        // Append swimmer positions and rotations for up to maxSwimmers.
+        // For each swimmer, we use the parent's x and z, but for the y and rotation we get data from the "male" child.
+        string swimmerData = "";
+        for (int i = 0; i < maxSwimmers; i++)
+        {
+            if (i < swimmers.Count && swimmers[i] != null)
+            {
+                // Get x and z from the parent.
+                Vector3 swPos = swimmers[i].transform.position;
+
+                // Search for the "male" child (recursively) to get the animated y value and its rotation.
+                Transform maleTransform = null;
+                foreach (Transform child in swimmers[i].GetComponentsInChildren<Transform>())
+                {
+                    if (child.name.Equals("male"))
+                    {
+                        maleTransform = child;
+                        break;
+                    }
+                }
+
+                if (maleTransform != null)
+                {
+                    swPos.y = maleTransform.position.y;
+                    // Get rotation from the "male" child.
+                    Vector3 maleRot = maleTransform.rotation.eulerAngles;
+                    swimmerData += string.Format(",{0:F4},{1:F4},{2:F4},{3:F4},{4:F4},{5:F4}", 
+                        swPos.x, swPos.y, swPos.z, maleRot.x, maleRot.y, maleRot.z);
+                }
+                else
+                {
+                    // If "male" child isn't found, log parent's position and rotation.
+                    Vector3 swRot = swimmers[i].transform.rotation.eulerAngles;
+                    swimmerData += string.Format(",{0:F4},{1:F4},{2:F4},{3:F4},{4:F4},{5:F4}", 
+                        swPos.x, swPos.y, swPos.z, swRot.x, swRot.y, swRot.z);
+                }
+            }
+            else
+            {
+                swimmerData += ",,,,,,";
+            }
+        }
+
+        line += swimmerData;
         eventBuffer.Add(line);
-        // Debug.Log($"[XRInputLogger] Buffered frame log: {line}");
 
         // Reset event fields so they only appear on the frame they occur.
         epochSchedulerOutput = "";
@@ -94,51 +155,53 @@ public class XRInputLogger : MonoBehaviour
         userSwimmerSelection = "";
     }
 
-    // Static methods for logging events when they occur.
+    // Static logging methods.
     public static void LogEpochSchedulerOutput(string output)
     {
-        if (FindObjectOfType<XRInputLogger>() == null)
+        XRInputLogger logger = FindObjectOfType<XRInputLogger>();
+        if (logger == null)
         {
             Debug.LogWarning("[XRInputLogger] No active instance to record epoch scheduler output!");
             return;
         }
-        FindObjectOfType<XRInputLogger>().epochSchedulerOutput = output;
+        logger.epochSchedulerOutput = output;
     }
 
     public static void LogControllerInput(string input)
     {
-        if (FindObjectOfType<XRInputLogger>() == null)
+        XRInputLogger logger = FindObjectOfType<XRInputLogger>();
+        if (logger == null)
         {
             Debug.LogWarning("[XRInputLogger] No active instance to record controller input!");
             return;
         }
-        FindObjectOfType<XRInputLogger>().controllerInput = input;
+        logger.controllerInput = input;
     }
 
     public static void LogUserSwimmerSelection(string selection)
     {
-        if (FindObjectOfType<XRInputLogger>() == null)
+        XRInputLogger logger = FindObjectOfType<XRInputLogger>();
+        if (logger == null)
         {
             Debug.LogWarning("[XRInputLogger] No active instance to record user swimmer selection!");
             return;
         }
-        FindObjectOfType<XRInputLogger>().userSwimmerSelection = selection;
+        logger.userSwimmerSelection = selection;
     }
 
-    // Optional: still available for other custom events.
     public static void LogCustomEvent(string message)
     {
-        if (FindObjectOfType<XRInputLogger>() == null)
+        XRInputLogger logger = FindObjectOfType<XRInputLogger>();
+        if (logger == null)
         {
             Debug.LogWarning("[XRInputLogger] No active instance to record event!");
             return;
         }
-        FindObjectOfType<XRInputLogger>().BufferCustomEvent(message);
+        logger.BufferCustomEvent(message);
     }
 
     private void BufferCustomEvent(string message)
     {
-        // This logs a custom event. For consistency, event-specific columns remain empty.
         string line = string.Format("{0:O},{1},{2},{3},{4},,,,," +
             ",,,,", DateTime.UtcNow, subjectID, age, gender, handedness) + message;
         eventBuffer.Add(line);
@@ -166,11 +229,15 @@ public class XRInputLogger : MonoBehaviour
 
         using (StreamWriter writer = new StreamWriter(filePath, true))
         {
-            // Write header if the file doesn't exist.
-            if (!File.Exists(filePath))
+            // Build header.
+            string header = "Timestamp,SubjectID,Age,Gender,Handedness,EpochSchedulerOutput,ControllerInput,UserSwimmerSelection,HeadX,HeadY,HeadZ,HeadRoll,HeadPitch,HeadYaw";
+            // For each swimmer, add 6 columns: x, y, z, rotX, rotY, rotZ.
+            for (int i = 1; i <= maxSwimmers; i++)
             {
-                writer.WriteLine("Timestamp,SubjectID,Age,Gender,Handedness,EpochSchedulerOutput,ControllerInput,UserSwimmerSelection,HeadX,HeadY,HeadZ,HeadRoll,HeadPitch,HeadYaw");
+                header += string.Format(",swimmer{0}x,swimmer{0}y,swimmer{0}z,swimmer{0}rotX,swimmer{0}rotY,swimmer{0}rotZ", i);
             }
+            writer.WriteLine(header);
+
             foreach (string line in eventBuffer)
             {
                 writer.WriteLine(line);
