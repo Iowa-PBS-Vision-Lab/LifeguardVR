@@ -2,9 +2,9 @@
 A realtime Unity and C# based lifeguarding simulation virtual reality experiment.
 
 ## Features:
--Real time swimmer "epoch" scheduling systems.
--Data capture including player telemetry and virtual reality interactions.
--Detailed swimming pool environment.
+-Real time swimmer "epoch" scheduling systems./
+-Data capture including player telemetry and virtual reality interactions./
+-Detailed swimming pool environment./
 -Water simulation vertex shader.
 
 ## Compilation:
