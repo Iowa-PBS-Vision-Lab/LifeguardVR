@@ -42,9 +42,9 @@ public class SelectSwimmer : MonoBehaviour
                 if (hitL.collider.transform.parent.gameObject.name.Contains("(Drowner)") && 
                     device.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out triggerValue) && triggerValue)
                 {
-                    Debug.Log("The player has found the drowner!");
-                    // Log the event using the logging system.
-                    XRInputLogger.LogCustomEvent($"User selected {hitL.collider.transform.parent.gameObject.name}");
+                    // Debug.Log("The player has found the drowner!");
+                    // // Log the event using the logging system.
+                    // XRInputLogger.LogCustomEvent($"User selected {hitL.collider.transform.parent.gameObject.name}");
                 }
             }
 
@@ -55,8 +55,8 @@ public class SelectSwimmer : MonoBehaviour
                 if (hitR.collider.transform.parent.gameObject.name.Contains("(Drowner)") && 
                     device.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out triggerValue) && triggerValue)
                 {
-                    Debug.Log("The player has found the drowner!");
-                    XRInputLogger.LogCustomEvent($"User selected {hitR.collider.transform.parent.gameObject.name}");
+                    // Debug.Log("The player has found the drowner!");
+                    // XRInputLogger.LogCustomEvent($"User selected {hitR.collider.transform.parent.gameObject.name}");
                 }
             }
         }

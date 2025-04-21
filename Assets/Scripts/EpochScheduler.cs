@@ -44,8 +44,8 @@ public class EpochScheduler : MonoBehaviour
         // Randomly pick one.
         drownId = UnityEngine.Random.Range(0, swimmerSet.Count);
         swimmerSet[drownId].name += "(Drowner)";
-        // Log the event.
-        XRInputLogger.LogCustomEvent($"EpochScheduler picked drowner: {swimmerSet[drownId].name}");
+        // // Log the event.
+        // XRInputLogger.LogCustomEvent($"EpochScheduler picked drowner: {swimmerSet[drownId].name}");
     }
 
     private void spawnSwimmers(int count){
@@ -64,8 +64,8 @@ public class EpochScheduler : MonoBehaviour
             swimmerId++;
             temp.GetComponent<Transform>().position = new Vector3(temp_x, 0, temp_z);
             swimmerSet.Add(temp);
-            // Log the spawn event.
-            XRInputLogger.LogCustomEvent($"EpochScheduler spawned: {temp.name}");
+            // // Log the spawn event.
+            // XRInputLogger.LogCustomEvent($"EpochScheduler spawned: {temp.name}");
         }
     }
 
@@ -74,7 +74,7 @@ public class EpochScheduler : MonoBehaviour
         // Also re-append their spawnpoint to our open coordinates.
         for (int i = 0; i < count; i++) {
             // Log the culling event.
-            XRInputLogger.LogCustomEvent($"EpochScheduler culled: {swimmerSet[0].name}");
+            // XRInputLogger.LogCustomEvent($"EpochScheduler culled: {swimmerSet[0].name}");
             spawnx.Add((int)Math.Round(swimmerSet[0].GetComponent<Transform>().position.x));
             spawnz.Add((int)Math.Round(swimmerSet[0].GetComponent<Transform>().position.z));
             Destroy(swimmerSet[0]);

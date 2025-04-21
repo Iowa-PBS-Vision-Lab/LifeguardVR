@@ -1449,7 +1449,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cac3d59eaa5822749888d23d847a03cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rayInteractor: {fileID: 417020510}
+  LeftInteractor: {fileID: 0}
+  RightInteractor: {fileID: 0}
 --- !u!1 &493884045
 GameObject:
   m_ObjectHideFlags: 0
@@ -2183,7 +2184,6 @@ GameObject:
   - component: {fileID: 1573566383}
   - component: {fileID: 1573566382}
   - component: {fileID: 1573566384}
-  - component: {fileID: 1573566385}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2269,23 +2269,6 @@ MonoBehaviour:
   drownId: 0
   swimmerSet: []
   outputText: {fileID: 292992340}
---- !u!114 &1573566385
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1573566380}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0bd0e7e59b8f14018a352c711840613d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  subjectID: DefaultSubject
-  age: N/A
-  gender: N/A
-  handedness: N/A
-  headTransform: {fileID: 0}
 --- !u!1 &1722328073
 GameObject:
   m_ObjectHideFlags: 0
