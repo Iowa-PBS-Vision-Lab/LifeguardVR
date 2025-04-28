@@ -15,5 +15,4 @@ Assets/Scenes/start_scene.unity <- Is where the participants's information is ta
 Assets/Scenes/pool_test.unity <- Is where the experiment is run, with the information being logged into a .csv.
 
 ## Research Poster:
-![Slide1](https://github.com/user-attachments/assets/6a0318fc-eedf-4a6c-9bcd-d5ccf25ca677)
-
+![Slide1](https://github.com/user-attachments/assets/0c93ca7e-e43b-40f2-9a35-d2da9042291f)
